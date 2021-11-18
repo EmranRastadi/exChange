@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@atoms/*" : ["./commons/components/atoms/*"],
+      "@organisms/*" : ["./commons/components/organisms/*"],
+      "@molecules/*" : ["./commons/components/molecules/*"],
+      "@templates/*" : ["./commons/components/templates/*"],
+      "@utils/*" : ["./commons/utils/*"],
+      "@components/*": ["components/*"],
+      "@pages/*": ["pages/*"],
+      "@hooks/*": ["hooks/*"]
+    }
+  }
+}
