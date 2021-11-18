@@ -5,13 +5,13 @@ import {ChangeEvent} from "react";
 import useStyle from "../../../utils/style";
 
 export interface RateFormProps {
-  type: string,
-  data: any,
+  type: string, // from or to
+  data: any, // rates data
   children?: any,
-  value?: number,
-  selectCurrency: any,
-  currency: any,
+  value?: number, // default value and change value
+  selectCurrency: any, // currency selected on selectOption
   loading?: boolean,
+  lotOf ? :number, // num of fromCurrency
   onChangeValue?: (e: ChangeEvent<HTMLInputElement>) => void,
   handleChangeCurrencyType: any
 }
@@ -23,7 +23,8 @@ export default function RateForm(props: RateFormProps) {
     if (props.loading) {
       return (<CircularProgress className={classes.spinner}/>)
     } else {
-      return (<TextShow title={props.value ? parseFloat(props.value.toFixed(2)) : 1}/>)
+      // @ts-ignore
+      return (<TextShow title={props.value ? parseFloat(props.value * (props.lotOf ? props.lotOf : 1)).toFixed(2)  : 1}/>)
     }
   }
 

@@ -4,9 +4,6 @@ import useStyle from "../../../utils/style";
 import {Button} from "../../atoms";
 import React, {ChangeEvent, useEffect, useState} from "react";
 import _ from 'lodash'
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../../utils/store";
-import {exChangeSetDataAction, exChangeFromCurrnecy, exChangeToCurrnecy} from "../../../hooks/reducers/exChange";
 import {useQuery} from 'react-query';
 import {GetCurrency, GetCurrencyFilter} from "../../../hooks/hooks";
 
@@ -17,7 +14,6 @@ export default function ConverterForm() {
   const [dataCurrency, setDataCurrency] = useState<any>([])
   const [fromCurrency, setFromCurrency] = useState<string>('')
   const [toCurrency, setToCurrency] = useState<string>('')
-  const [exrateChange, setExrateChanges] = useState<any>(1)
   const [value, setValue] = useState<number>(1)
 
   const queryMultiple = () => {
@@ -35,34 +31,25 @@ export default function ConverterForm() {
   ] = queryMultiple();
 
 
-  let amountTo
-
-
   useEffect(() => {
-    // if (data1) {
-      if (data2) {
-        const toCurrencyKeys = Object.values(data2.data?.rates);
-        const toCurrencyValue = Object.keys(data2.data?.rates);
-        setDataCurrency(data2.data?.rates)
-        if (!fromCurrency) {
-          setFromCurrency(data2.data?.base)
+    if (data1) {
+      const toCurrencyValue = Object.keys(data1.data?.rates);
+      setDataCurrency(data1.data?.rates)
+      if (!fromCurrency) {
+        setFromCurrency(data1.data?.base)
+      }
+      if (!toCurrency) {
+        setToCurrency(toCurrencyValue[0])
+      } else {
+        let toFind = toCurrencyValue.indexOf(toCurrency);
+        if (toFind > -1) {
+          setToCurrency(toCurrencyValue[toFind])
         }
-        if (!toCurrency) {
-          setToCurrency(toCurrencyValue[0])
-          setExrateChanges(data2.data?.rates[toCurrencyValue[0]])
-        }else{
-          let toFind = toCurrencyValue.indexOf(toCurrency);
-          if(toFind > -1) {
-            setToCurrency(toCurrencyValue[toFind])
-            setExrateChanges(data2.data?.rates[toCurrencyValue[toFind]])
-          }
-        }
+      }
     }
+  }, [data1])
 
-  }, [data2])
-
-  amountTo = value * exrateChange;
-
+  // fromCurrency text input change and check num of decimal
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     let splitNumToStr = e.target.value.toString().split(".");
     if (splitNumToStr.length === 1) {
@@ -76,24 +63,31 @@ export default function ConverterForm() {
     }
   }
 
-  const onSubmit = () => {
+  // reset form
+  const onExChange = () => {
+    setValue(1)
   }
 
+
+
+  // get change toCurrency select option
   const handleChangeToCurrencyType = (e: ChangeEvent<HTMLInputElement>) => {
     setToCurrency(e.target.value);
     setValue(1)
   }
 
 
+
+  // change place target from & to
   const onChangeTranslate = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     let to = toCurrency;
     let from = fromCurrency;
-
     setToCurrency(from);
     setFromCurrency(to);
   }
 
+  // get change fromCurrency select option
   const handleChangeFromCurrencyType = (e: ChangeEvent<HTMLInputElement>) => {
     setFromCurrency(e.target.value)
     setValue(1)
@@ -103,17 +97,25 @@ export default function ConverterForm() {
   return (
     <Grid item md={4} sm={10} className={classes.parentMain}>
       <Box width={'100%'} className={classes.mainRating}>
-        <RateForm data={dataCurrency} handleChangeCurrencyType={handleChangeFromCurrencyType}
-                  type={"from"} selectCurrency={fromCurrency} value={value}
-                  currency={dataCurrency} onChangeValue={onChange}/>
-        <RateForm data={dataCurrency} handleChangeCurrencyType={handleChangeToCurrencyType}
-                  selectCurrency={toCurrency} loading={loading2 ? loading2 : false} type={"to"} value={amountTo}
-                  currency={dataCurrency}/>
-        <RateBox loading={loading2} onChangeTranslate={onChangeTranslate} rateLabelTextFrom={`150000# ${fromCurrency}`}
-                 rateLabelTextTo={`150000$ ${toCurrency}`}/>
+        <RateForm data={dataCurrency}
+                  handleChangeCurrencyType={handleChangeFromCurrencyType}
+                  type={"from"}
+                  selectCurrency={fromCurrency}
+                  value={value}
+                  onChangeValue={onChange}/>
+        <RateForm data={dataCurrency}
+                  handleChangeCurrencyType={handleChangeToCurrencyType}
+                  selectCurrency={toCurrency}
+                  loading={loading2 ? loading2 : false}
+                  type={"to"}
+                  value={data2?.data?.rates[toCurrency]}
+                  lotOf={value}/>
+        <RateBox loading={loading2}
+                 onChangeTranslate={onChangeTranslate}
+                 rateLabelTextFrom={`1 ${fromCurrency}`}
+                 rateLabelTextTo={`${data2 ? parseFloat(data2?.data?.rates[toCurrency]).toFixed(2) : 1} ${toCurrency}`}/>
       </Box>
-      <Button onClick={onSubmit}>Exchange</Button>
-
+      <Button disabled={value == 1 ? true : false} onClick={onExChange}>Exchange</Button>
     </Grid>
   )
 }
