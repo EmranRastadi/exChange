@@ -7,7 +7,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
         <Luncher/>
-      <ReactQueryDevtools />
+      {/*<ReactQueryDevtools />*/}
     </QueryClientProvider>
   );
 }
