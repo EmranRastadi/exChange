@@ -3,14 +3,10 @@ import {RateForm, RateBox} from "../../molecules";
 import useStyle from "../../../utils/style";
 import {Button} from "../../atoms";
 import React, {ChangeEvent, useEffect, useState} from "react";
-import _ from 'lodash'
-import {useQuery} from 'react-query';
 import {GetCurrency, GetCurrencyFilter} from "../../../hooks/hooks";
-
 export default function ConverterForm() {
 
   const classes = useStyle();
-
   const [dataCurrency, setDataCurrency] = useState<any>([])
   const [fromCurrency, setFromCurrency] = useState<string>('')
   const [toCurrency, setToCurrency] = useState<string>('')

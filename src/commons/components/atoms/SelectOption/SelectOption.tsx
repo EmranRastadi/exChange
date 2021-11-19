@@ -22,7 +22,6 @@ export default function SelectOption(props: Props) {
   });
 
   useEffect(() => {
-
     // check and change amount type and value
     if (indexOfCurrencyKey > -1) {
       // @ts-ignore
@@ -43,7 +42,7 @@ export default function SelectOption(props: Props) {
       onChange={(e: ChangeEvent<HTMLInputElement>) => props.handleChange(e)}
       helperText={currency.value + " " + currency.type}
     >
-      {props.values && Object.entries(props.values).map(([value, key]: any, index: number) => {
+      {props.values && Object.entries(props.values).map(([value, key] : any, index: number) => {
         return (
           <MenuItem key={index} value={value}>
             {value}
